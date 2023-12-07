@@ -1,0 +1,11 @@
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
+public class PdfToText {
+    public static void main(String[] args) {
+        PDDocument pdDocument = PDDocument.load(new File(args[0]));
+        PDFTextStripper pdfStripper = new PDFTextStripper();
+        String text = pdfStripper.getText(pdDocument);
+        // write 'text' to a .txt file
+    }
+}
