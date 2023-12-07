@@ -23,30 +23,30 @@
   <?php
   if (isset($_FILES['pdfFile']['name'])) {
     // Loop over each submitted file
-    foreach ($_FILES['pdfFile']['tmp_name'] as $i => $tmp_name) {
+    foreach ($_FILES['pdfFile']['name'] as $i => $name) {
       $name = $_FILES['pdfFile']['name'][$i];
       // echo "Uploaded file name: " . $name . "<br>";
 
       // Define the paths for the input file, output directory, and output file
-      $inputPath = "/var/www/html/input/";
-      $outputPath = "/var/www/html/output/";
+      $inputPath = "/home/dejie/pdf-to-txt/input/";
+      $outputPath = "/home/dejie/pdf-to-txt/output/";
 
       $inputFile = $inputPath . $name;
       $outputFile = $outputPath . preg_replace('/\.[^.]+$/', '.txt', $name);
 
       // Move the uploaded file to the input directory
-      move_uploaded_file($tmp_name, $inputFile);
+      move_uploaded_file($name, $inputFile);
 
       session_start();
 
       // Define the command to compile and execute the Java program
-      $executeCommand = "java -cp /var/www/html/lib/pdfbox-app-3.0.1.jar:/var/www/html/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
+      $executeCommand = "java -cp /home/dejie/pdf-to-txt/lib/pdfbox-app-3.0.1.jar:/home/dejie/pdf-to-txt/bin ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
       // Execute the Java program
       exec($executeCommand);
 
       // Check if the conversion was successful
       if (file_exists($outputFile)) {
-        // echo "File exists";
+        echo "File exists";
 
         // Get the filename with extension
         // $fileName = preg_replace('/\.[^.]+$/', '.txt', basename($name));
@@ -57,7 +57,7 @@
 
         // Read the file content into a variable
         // readfile($outputFile);
-        $url = str_replace('/var/www/html', '', $outputFile);
+        $url = str_replace('/home/dejie/pdf-to-txt/', '', $outputFile);
         echo "<a href=\"" . $url . "\" download>Download " . basename($outputFile) . "</a><br>";
         // $fileContent = file_get_contents($outputFile);
 
