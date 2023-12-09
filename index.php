@@ -11,77 +11,100 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
 </head>
 
+<script>
+  // Reload the page to avoid form resubmission
+  if (performance.navigation.type == 2) {
+    location.reload(true);
+  }
+
+  // avoid form resubmission
+  if (window.history.replaceState && performance.navigation.type != 1) {
+    window.history.replaceState(null, null, window.location.href);
+  }
+</script>
+
 <body>
   <nav class="navbar">
     <h1 class="nav-item">OnlyPDF - Your One-stop PDF solution</h1>
   </nav>
   <h1>Convert PDF to TXT file, or vice versa</h1>
   <form action="" method="POST" enctype="multipart/form-data">
-    <input type="file" name="pdfFile[]" accept=".pdf" multiple />
-    <button type="submit">Convert</button>
+    <input id="fileInput" type="file" name="pdfFile[]" accept=".pdf" multiple />
+    <button id="submitButton" type="submit">Convert</button>
   </form>
+
   <?php
-  if (isset($_FILES['pdfFile']['name'])) {
-    // Loop over each submitted file
-    foreach ($_FILES['pdfFile']['tmp_name'] as $i => $tmp_name) {
-      $name = $_FILES['pdfFile']['name'][$i];
-      // echo "Uploaded file name: " . $name . "<br>";
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_FILES['pdfFile']['name'])) {
+      // Loop over each submitted file
+      foreach ($_FILES['pdfFile']['tmp_name'] as $i => $tmp_name) {
+        $name = $_FILES['pdfFile']['name'][$i];
 
-      // Define the paths for the input file, output directory, and output file
-      $inputPath = "/var/www/html/input/";
-      $outputPath = "/var/www/html/output/";
+        // Define the input and output file paths
+        $inputPath = "/var/www/html/input/";
+        $outputPath = "/var/www/html/output/";
 
-      $inputFile = $inputPath . $name;
-      $outputFile = $outputPath . preg_replace('/\.[^.]+$/', '.txt', $name);
+        // Define the input and output file
+        $inputFile = $inputPath . $name;
+        $outputFile = $outputPath . preg_replace('/\.[^.]+$/', '.txt', $name);
 
-      // Move the uploaded file to the input directory
-      move_uploaded_file($tmp_name, $inputFile);
+        // Start the session so we can store the output file path
+        session_start();
 
-      session_start();
+        // Store the output file in the session so we can download it later
+        $_SESSION['outputFiles'][$name] = $outputFile;
 
-      // Define the command to compile and execute the Java program
-      $executeCommand = "java -cp /var/www/html/lib/pdfbox-app-3.0.1.jar:/var/www/html/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
-      // Execute the Java program
-      exec($executeCommand);
+        // Move the uploaded file to the input directory
+        move_uploaded_file($tmp_name, $inputFile);
 
-      // Check if the conversion was successful
-      if (file_exists($outputFile)) {
-        // echo "File exists";
+        // Define the command to compile and execute the Java program
+        $executeCommand = "java -cp /var/www/html/lib/pdfbox-app-3.0.1.jar:/var/www/html/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
 
-        // Get the filename with extension
-        // $fileName = preg_replace('/\.[^.]+$/', '.txt', basename($name));
+        // Execute the Java program
+        exec($executeCommand);
 
-        // Set the headers to force the browser to download the file
-        // header("Content-Type: application/txt");
-        // header("Content-Disposition: attachment; filename=" . $fileName);
+        // Check if the conversion was successful
+        if (file_exists($outputFile)) {
+          // Set the header to redirect to the download page
+          header('Location: download.php?filename=' . urlencode($name));
 
-        // Read the file content into a variable
-        // readfile($outputFile);
-        $url = str_replace('/var/www/html', '', $outputFile);
-        echo "<a href=\"" . $url . "\" download>Download " . basename($outputFile) . "</a><br>";
-        // $fileContent = file_get_contents($outputFile);
-
-        // Send the file content to the browser
-        // echo $fileContent;
-
-        // Register a shutdown function to delete the file
-        // register_shutdown_function(function () use ($outputFile, $inputFile) {
-        //   unlink($outputFile);
-        //   // Unlink the input file
-        //   unlink($inputFile);
-        // });
-      } else {
-        // If the conversion failed, display an error message and delete the input file
-        echo "Error converting PDF!";
-        if (file_exists($inputFile)) {
+          // Delete the input file
           unlink($inputFile);
+
+          // Exit the script
+          exit;
+        } else {
+          // If the conversion failed, display an error message and delete the input file
+          echo "PDF conversion failed. Please make sure the PDF file contain no images.";
+          if (file_exists($inputFile)) {
+            unlink($inputFile);
+          }
         }
       }
     }
-  } else {
-    echo "Please select a PDF file to upload.";
   }
   ?>
 </body>
 
 </html>
+
+<script>
+  window.onload = function() {
+    var fileInput = document.getElementById('fileInput');
+    var submitButton = document.getElementById('submitButton');
+
+    // Disable the submit button if no file is selected
+    if (fileInput.files.length === 0) {
+      submitButton.disabled = true;
+    }
+
+    // Add an event listener for the change event on the file input
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        submitButton.disabled = false;
+      } else {
+        submitButton.disabled = true;
+      }
+    });
+  };
+</script>
