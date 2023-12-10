@@ -28,8 +28,16 @@
     <h1 class="nav-item">OnlyPDF - Your One-stop PDF solution</h1>
   </nav>
   <h1>Convert PDF to TXT file, or vice versa</h1>
+  
   <form action="" method="POST" enctype="multipart/form-data">
+    <h2> PDF to TXT</h2>
     <input id="fileInput" type="file" name="pdfFile[]" accept=".pdf" multiple />
+    <button id="submitButton" type="submit">Convert</button>
+  </form>
+
+  <form action="" method="POST" enctype="multipart/form-data">
+    <h2>TXT to PDF</h2>
+    <input id="fileInput" type="file" name="txtFile[]" accept=".txt" multiple />
     <button id="submitButton" type="submit">Convert</button>
   </form>
 
