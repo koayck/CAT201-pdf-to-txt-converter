@@ -46,7 +46,7 @@
             Only pdf files are allowed.
           </p>
         </label>
-        <button id="submitButton" type="submit">Convert!</button>
+        <button class="" id="submitButton" type="submit">Convert!</button>
       </form>
     </div>
   </section>
@@ -155,8 +155,10 @@
     fileInput.addEventListener('change', function() {
       if (this.files.length > 0) {
         submitButton.disabled = false;
+        submitButton.classList.toggle("able");
       } else {
         submitButton.disabled = true;
+        submitButton.classList.toggle("able");
       }
     });
   };

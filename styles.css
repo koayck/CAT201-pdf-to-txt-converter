@@ -223,12 +223,15 @@ body {
   padding: 0.6rem 1.2rem 0.6rem 1.2rem;
   border-radius: 10px;
   font-size: 1.2rem;
-  background-color: #4285F4;
-  color: #FFFFFF;
+  cursor: not-allowed;
   transition: 0.3s ease;
 }
 
-#submitButton:hover {
+
+.able:hover {
+  background-color: #4285F4;
+  color: #FFFFFF;
+  cursor: pointer;
   transform: scale(1.2);
 }
 
