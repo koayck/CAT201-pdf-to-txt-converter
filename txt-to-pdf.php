@@ -158,8 +158,10 @@
         fileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
                 submitButton.disabled = false;
+                submitButton.classList.toggle("able");
             } else {
                 submitButton.disabled = true;
+                submitButton.classList.toggle("able");
             }
         });
     };
