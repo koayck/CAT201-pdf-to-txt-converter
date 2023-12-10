@@ -1,57 +1,77 @@
-import java.io.IOException;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 
+// Import necessary libraries
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
- 
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
- 
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
- 
-public class Text2PDF {
-    public static void main(String[] args) throws IOException {
-        // Check if filename is supplied
-        if(args.length != 1) {
-            System.out.println("Please provide a file as a command line argument.");
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ConvertTXT {
+    public static void main(String[] args) {
+        // Check if the correct number of arguments are provided
+        if (args.length < 2) {
+            System.err.println("Usage: java TxtToPdf <txt_file> <output_directory>");
             System.exit(1);
         }
-        File file = new File(args[0]);
-        String filename = "Text2PDF.pdf";
-        
-        PDDocument doc = new PDDocument();
-        try {
+
+        // Get the input file and output directory from the arguments
+        String inputFile = args[0];
+        String outputDirectory = args[1];
+
+        // Extract the base name of the input file
+        File inputFileObj = new File(inputFile);
+        String baseName = inputFileObj.getName().substring(0, inputFileObj.getName().lastIndexOf("."));
+
+        // Define the output file path
+        String outputFile = outputDirectory + File.separator + baseName + ".pdf";
+
+        try (PDDocument doc = new PDDocument()) {
             PDPage page = new PDPage();
             doc.addPage(page);
-             
-            PDFont font = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
- 
-            PDPageContentStream contents = new PDPageContentStream(doc, page);
-            contents.beginText();
-            contents.setFont(font, 30);
-            contents.newLineAtOffset(50, 700);
 
-            try (Scanner scanner = new Scanner(file)) {
-                // Read the file line by line
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    contents.showText(line);
-                    contents.newLineAtOffset(0, -15);
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+            contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+            contentStream.beginText();
+            contentStream.newLineAtOffset(50, 700);
+
+            try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+                String line;
+                float yPosition = 700.0f;
+
+                while ((line = br.readLine()) != null) {
+                    // Add the line to the content stream and move to the next line
+                    contentStream.showText(line);
+                    yPosition -= 12;
+                    contentStream.newLineAtOffset(0, -12);
+
+                    // If the end of the page is reached, create a new page
+                    if (yPosition < 50) {
+                        contentStream.endText();
+                        contentStream.close();
+                        page = new PDPage();
+                        doc.addPage(page);
+                        contentStream = new PDPageContentStream(doc, page);
+                        contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
+                        contentStream.beginText();
+                        contentStream.newLineAtOffset(50, 700);
+                        yPosition = 700.0f;
+                    }
                 }
-            } catch (FileNotFoundException e) {
-                System.out.println("File not found: " + file.toString());
             }
 
-            contents.endText();
-            contents.close();
-             
-            doc.save(filename);
+            contentStream.endText();
+            contentStream.close();
+
+            doc.save(outputFile);
+            System.out.println("TXT converted to PDF successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        finally {
-            doc.close();
-        }
+
     }
 }
