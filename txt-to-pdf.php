@@ -34,16 +34,16 @@
     </form>
 
     <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    // ini_set('display_errors', 1);
+    // ini_set('display_startup_errors', 1);
+    // error_reporting(E_ALL);
 
     // Set the session save path
     ini_set('session.save_path', ($_SERVER['DOCUMENT_ROOT']) . '/sessions');
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Check if the file was uploaded
-        if (isset($_FILES['txtfile']['name']) && $_FILES['txtFile']['size'] > 0) {
+        if (isset($_FILES['txtFile']['name']) && $_FILES['txtFile']['size'] > 0) {
             // Create a new zip archive if there are multiple files
             $zip = new ZipArchive();
             $zipName = $_SERVER['DOCUMENT_ROOT'] . "/output/txt-to-pdf_files_" . rand(100000, 999999) . ".zip";
@@ -56,17 +56,18 @@
 
             // Loop over each submitted file
             foreach ($_FILES['txtFile']['tmp_name'] as $i => $tmp_name) {
-                $name = $_FILES['txtfile']['name'][$i];
+                $name = $_FILES['txtFile']['name'][$i];
 
                 // Define the input and output file paths
                 $inputPath = $_SERVER['DOCUMENT_ROOT'] . "/input/";
                 $outputPath = $_SERVER['DOCUMENT_ROOT'] . "/output/";
 
-                echo $inputPath;
-
+                
                 // Define the input and output 
                 $inputFile = $inputPath . $name;
                 $outputFile = $outputPath . preg_replace('/\.[^.]+$/', '.pdf', $name);
+                
+                echo $inputPath;
 
                 // Move the uploaded file to the input directory
                 move_uploaded_file($tmp_name, $inputFile);
@@ -88,7 +89,7 @@
                     unlink($inputFile);
                 } else {
                     // If the conversion failed, display an error message and delete the input file
-                    echo "txt to pdf conversion failed.";
+                    echo "txt to `pdf` conversion failed.";
                     if (file_exists($inputFile)) {
                         unlink($inputFile);
                     }
@@ -101,15 +102,15 @@
                 $name = basename($zipName);
                 $filename = $outputPath . basename($zipName);
             } else {
-                $name = preg_replace('/\.[^.]+$/', '.pdf', $name);
+                $name = preg_replace('/\.[^.]+$/', '.txt', $name);
                 $filename = $outputFile;
-            }
+            }   
 
             // Store the output file in the session so we can download it later
             $_SESSION['outputFiles'][$name] = $filename;
 
             // Redirect to the download page
-            // header('Location: download.php?filename=' . urlencode($name));
+            header('Location: download.php?filename=' . urlencode($name));
 
             exit;
         } else {
