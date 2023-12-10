@@ -29,8 +29,6 @@
           unset($_SESSION['outputFiles'][$name]);
           session_destroy();
 
-          
-
           echo "The file is no longer available for download.";
         } else {
 
