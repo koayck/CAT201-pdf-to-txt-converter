@@ -34,11 +34,26 @@
   </form>
 
   <?php
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+
   // Set the session save path
   ini_set('session.save_path', ($_SERVER['DOCUMENT_ROOT']) . '/sessions');
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_FILES['pdfFile']['name'])) {
+    // Check if the file was uploaded
+    if (isset($_FILES['pdfFile']['name']) && $_FILES['pdfFile']['size'] > 0) {
+      // Create a new zip archive if there are multiple files
+      $zip = new ZipArchive();
+      $zipName = $_SERVER['DOCUMENT_ROOT'] . "/output/files_" . rand(100000, 999999) . ".zip";
+      if (count($_FILES['pdfFile']['name']) > 1 && $zip->open($zipName, ZipArchive::CREATE) !== TRUE) {
+        exit("Cannot open <$zipName>\n");
+      }
+
+      // Start the session so we can store the output file path
+      session_start();
+
       // Loop over each submitted file
       foreach ($_FILES['pdfFile']['tmp_name'] as $i => $tmp_name) {
         $name = $_FILES['pdfFile']['name'][$i];
@@ -51,32 +66,24 @@
         $inputFile = $inputPath . $name;
         $outputFile = $outputPath . preg_replace('/\.[^.]+$/', '.txt', $name);
 
-        // Start the session so we can store the output file path
-        session_start();
-
-        // Store the output file in the session so we can download it later
-        $_SESSION['outputFiles'][$name] = $outputFile;
-
         // Move the uploaded file to the input directory
         move_uploaded_file($tmp_name, $inputFile);
 
         // Define the command to compile and execute the Java program
-        $executeCommand = "java -cp " . $_SERVER['DOCUMENT_ROOT'] . "/lib/pdfbox-app-3.0.1.jar:" . $_SERVER['DOCUMENT_ROOT'] .
-          "/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
+        $executeCommand = "java -cp " . $_SERVER['DOCUMENT_ROOT'] . "/lib/pdfbox-app-3.0.1.jar:" . $_SERVER['DOCUMENT_ROOT'] . "/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
 
         // Execute the Java program
         exec($executeCommand);
 
         // Check if the conversion was successful
         if (file_exists($outputFile)) {
-          // Set the header to redirect to the download page
-          header('Location: download.php?filename=' . urlencode($name));
+          // Add the file to the zip archive if there are multiple files
+          if (isset($zip)) {
+            $zip->addFile($outputFile, basename($outputFile));
+          }
 
           // Delete the input file
           unlink($inputFile);
-
-          // Exit the script
-          exit;
         } else {
           // If the conversion failed, display an error message and delete the input file
           echo "PDF conversion failed. Please make sure the PDF file contain no images.";
@@ -85,9 +92,37 @@
           }
         }
       }
+
+      // Close the zip archive if there are multiple files
+      if (isset($zip) && $zip->numFiles > 0) {
+        $zip->close();
+        $name = basename($zipName);
+        $filename = $outputPath . basename($zipName);
+      } else {
+        $name = preg_replace('/\.[^.]+$/', '.txt', $name);
+        $filename = $outputFile;
+      }
+
+      // Store the output file in the session so we can download it later
+      $_SESSION['outputFiles'][$name] = $filename;
+
+      echo $name;
+      echo $_SESSION['outputFiles'][$name];
+
+      // Redirect to the download page
+      header('Location: download.php?filename=' . urlencode($name));
+
+      exit;
+    } else {
+      // If the conversion failed, display an error message and delete the input file
+      echo "PDF conversion failed. Please make sure the PDF file contain no images.";
+      if (file_exists($inputFile)) {
+        unlink($inputFile);
+      }
     }
   }
   ?>
+
 </body>
 
 </html>
