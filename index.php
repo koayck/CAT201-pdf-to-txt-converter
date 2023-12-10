@@ -34,6 +34,9 @@
   </form>
 
   <?php
+  // Set the session save path
+  ini_set('session.save_path', ($_SERVER['DOCUMENT_ROOT']) . '/sessions');
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['pdfFile']['name'])) {
       // Loop over each submitted file
@@ -41,8 +44,8 @@
         $name = $_FILES['pdfFile']['name'][$i];
 
         // Define the input and output file paths
-        $inputPath = "/var/www/html/input/";
-        $outputPath = "/var/www/html/output/";
+        $inputPath = $_SERVER['DOCUMENT_ROOT'] . "/input/";
+        $outputPath = $_SERVER['DOCUMENT_ROOT'] . "/output/";
 
         // Define the input and output file
         $inputFile = $inputPath . $name;
@@ -58,7 +61,8 @@
         move_uploaded_file($tmp_name, $inputFile);
 
         // Define the command to compile and execute the Java program
-        $executeCommand = "java -cp /var/www/html/lib/pdfbox-app-3.0.1.jar:/var/www/html/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
+        $executeCommand = "java -cp " . $_SERVER['DOCUMENT_ROOT'] . "/lib/pdfbox-app-3.0.1.jar:" . $_SERVER['DOCUMENT_ROOT'] .
+          "/bin/ ConvertPDF \"" . $inputFile . "\" \"" . $outputPath . "\"";
 
         // Execute the Java program
         exec($executeCommand);
