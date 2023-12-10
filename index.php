@@ -19,7 +19,7 @@
   <nav class="navbar">
     <div class="nav_item">
       <ul class="nav_list">
-        <a class="nav" href="/index.php">Home</a>
+        <a class="nav" style="color:#C69C3C;" href="/index.php">Home</a>
         <a class="nav" href="/pdf-to-txt.php">PDF to TXT</a>
         <a class="nav" href="/txt-to-pdf.php">TXT to PDF</a>
       </ul>

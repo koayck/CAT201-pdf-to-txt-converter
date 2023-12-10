@@ -107,7 +107,7 @@ body {
   align-items: center;
 }
 
-.nav-item {
+.nav_item {
   display: flex;
   flex-direction: row;
 }
@@ -121,6 +121,11 @@ body {
 .nav {
   color: rgb(255 255 255);
   text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.nav:hover {
+  color: #D5B263;
 }
 
 .title {
@@ -201,11 +206,17 @@ body {
   padding: 1rem;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.3s ease;
 }
 
 #inputLabel p {
   font-weight: normal;
   font-size: 0.8rem;
+}
+
+#inputLabel:hover {
+  color: #FFFFFF;
+  background-color: #000000;
 }
 
 #submitButton {
@@ -228,6 +239,11 @@ body {
   background-color: #4285F4;
   border-radius: 0.8rem;
   padding: 0.8rem 1.6rem 0.8rem 1.6rem;
+  transition: 0.3s ease;
+}
+
+.download_anchor:hover {
+  transform: scale(1.2);
 }
 
 @media screen and (min-width: 450px) {
