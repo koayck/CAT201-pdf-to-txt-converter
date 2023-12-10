@@ -24,15 +24,21 @@
         $timeDiff = ($currentTime - $fileModTime) / 60;
 
         // If the time difference is more than 2 hours, unlink the file
-        if ($timeDiff > 1) {
+        if ($timeDiff > 0.2) {
           unlink($outputFile);
           unset($_SESSION['outputFiles'][$name]);
           session_destroy();
 
+          
+
           echo "The file is no longer available for download.";
         } else {
+
+          // Remove root path from the output file path
+          $outputFile = str_replace("/var/www/html", "", $outputFile);
+
           // If the file exists and is less than 2 hours old, display a download link
-          echo "<a href=" . $outputFile . " download >Download " . basename($outputFile) . "</a><br>";
+          echo "<a href=\"" . $outputFile . "\" download >Download " . basename($outputFile) . "</a><br>";
         }
       } else {
         echo "no output file";
