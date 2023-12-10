@@ -102,9 +102,6 @@
       // Store the output file in the session so we can download it later
       $_SESSION['outputFiles'][$name] = $filename;
 
-      echo $name;
-      echo $_SESSION['outputFiles'][$name];
-
       // Redirect to the download page
       header('Location: download.php?filename=' . urlencode($name));
 
