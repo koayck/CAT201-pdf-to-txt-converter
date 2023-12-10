@@ -70,12 +70,18 @@ h6 {
   --text-scale-ratio: 1.2;
 }
 
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   font-size: var(--text-base-size);
   font-family: var(--font-primary);
   color: var(--color-text);
   background-color: #F2F2F2;
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .hero {
@@ -85,17 +91,16 @@ body {
 .content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  height: 100%;
+  gap: 1rem;
   justify-content: center;
   align-items: center;
-  padding-left: 10rem;
-  padding-right: 10rem;
-  padding-top: 5rem;
   width: 100%;
+  min-height: calc(100vh - 20rem);  
+  flex-grow: 1;
 }
 
 .navbar {
+  height: 6rem;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -128,14 +133,28 @@ body {
   color: #D5B263;
 }
 
-.title {
+.hero-title {
+  padding: 2rem 0 2rem 0;
+  background-color: black;  
   display: flex;
   flex-direction: row;
   place-content: center;
   align-items: center;
   gap: 2rem;
   color: rgb(255 255 255);
-  font-size: 3.5rem;
+  font-size: 2.25rem;
+  font-family: var(--font-primary);
+}
+
+.title {
+  padding: 2rem 0 2rem 0;
+  display: flex;
+  flex-direction: row;
+  place-content: center;
+  align-items: center;
+  gap: 2rem;
+  color: rgb(255 255 255);
+  font-size: 2.25rem;
   font-family: var(--font-primary);
 }
 
@@ -147,14 +166,17 @@ body {
 }
 
 .title_img {
-  width: 13rem;
+  width: 8rem;
+  height: 8rem;
 }
 
 .card_container {
   width: 80%;
   display: flex;
   flex-direction: row;
-  place-content: space-between;
+  justify-content: center;
+  gap: 2rem;
+  height: 10rem;
 }
 
 .card_link {

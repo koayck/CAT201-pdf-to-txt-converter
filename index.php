@@ -5,9 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OnlyPDF</title>
-  <link rel="stylesheet" href="/styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com/" />
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
@@ -24,15 +24,16 @@
         <a class="nav" href="/txt-to-pdf.php">TXT to PDF</a>
       </ul>
     </div>
-    <div class="title">
-      <div class="title_img">
-        <img src="/static/android-chrome-512x512.png" alt="">
-      </div>
-      <h1>
-        Your One-stop PDF solution
-      </h1>
-    </div>
   </nav>
+
+  <div class="hero-title">
+    <div class="title_img">
+      <img src="/static/android-chrome-512x512.png" alt="">
+    </div>
+    <h1>
+      Your One-Stop PDF solution
+    </h1>
+  </div>
 
   <section class="content">
     <div class="card_container">
