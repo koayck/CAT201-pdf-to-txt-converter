@@ -16,29 +16,24 @@
 </head>
 
 <body>
-  <section class="hero">
-    <nav class="navbar">
-      <div class="nav_item">
-        <ul class="nav_list">
-          <a class="nav" href="/index.php">Home</a>
-          <a class="nav" href="/pdf-to-txt.php">PDF to TXT</a>
-          <a class="nav" href="/txt-to-pdf.php">TXT to PDF</a>
-        </ul>
-      </div>
-    </nav>
+  <nav class="navbar">
+    <div class="nav_item">
+      <ul class="nav_list">
+        <a class="nav" href="/index.php">Home</a>
+        <a class="nav" href="/pdf-to-txt.php">PDF to TXT</a>
+        <a class="nav" href="/txt-to-pdf.php">TXT to PDF</a>
+      </ul>
+    </div>
     <div class="title">
       <div class="title_img">
         <img src="/static/android-chrome-512x512.png" alt="">
       </div>
       <h1>
-        Your One-stop
-      </h1>
-      <h1>
-        PDF solution
+        Your One-stop PDF solution
       </h1>
     </div>
-    <h1>Convert PDF to TXT file, or vice versa</h1>
-  </section>
+  </nav>
+
   <section class="content">
     <div class="card_container">
       <a class="card_link" href="/pdf-to-txt.php">
