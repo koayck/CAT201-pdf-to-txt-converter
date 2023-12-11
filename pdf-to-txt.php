@@ -25,13 +25,31 @@
 
 <body>
   <nav class="navbar">
-    <a href="/" class="nav-item">OnlyPDF - Your One-stop PDF & TXT solution</a>
+    <div class="nav_item">
+      <ul class="nav_list">
+        <a class="nav" href="/index.php">Home</a>
+        <a class="nav" style="color:#C69C3C;" href="/pdf-to-txt.php">PDF to TXT</a>
+        <a class="nav" href="/txt-to-pdf.php">TXT to PDF</a>
+      </ul>
+    </div>
   </nav>
-  <h1>Convert PDF to TXT</h1>
-  <form action="" method="POST" enctype="multipart/form-data">
-    <input id="fileInput" type="file" name="pdfFile[]" accept=".pdf" multiple />
-    <button id="submitButton" type="submit">Convert</button>
-  </form>
+  <section class="content">
+    <div class="converter">
+      <h1 class="title">Convert PDF to TXT!</h1>
+      <p class="subtitle">Convert your PDF(s) to TXT, in just one click.</p>
+      <form class="form" action="" method="POST" enctype="multipart/form-data">
+        <input id="fileInput" type="file" name="pdfFile[]" accept=".pdf" multiple />
+        <label id="inputLabel" for="fileInput">
+          Choose file(s) to convert
+          <br>
+          <p>
+            Only pdf files are allowed.
+          </p>
+        </label>
+        <button class="" id="submitButton" type="submit">Convert!</button>
+      </form>
+    </div>
+  </section>
 
   <?php
   // Set the session save path
@@ -102,6 +120,9 @@
       // Store the output file in the session so we can download it later
       $_SESSION['outputFiles'][$name] = $filename;
 
+      echo $name;
+      echo $_SESSION['outputFiles'][$name];
+
       // Redirect to the download page
       header('Location: download.php?filename=' . urlencode($name));
 
@@ -134,8 +155,10 @@
     fileInput.addEventListener('change', function() {
       if (this.files.length > 0) {
         submitButton.disabled = false;
+        submitButton.classList.toggle("able");
       } else {
         submitButton.disabled = true;
+        submitButton.classList.toggle("able");
       }
     });
   };
