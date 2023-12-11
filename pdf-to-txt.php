@@ -52,6 +52,7 @@
   </section>
 
   <?php
+  ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
   // Set the session save path
   ini_set('session.save_path', ($_SERVER['DOCUMENT_ROOT']) . '/sessions');
 
@@ -64,9 +65,6 @@
       if (count($_FILES['pdfFile']['name']) > 1 && $zip->open($zipName, ZipArchive::CREATE) !== TRUE) {
         exit("Cannot open <$zipName>\n");
       }
-
-      // Start the session so we can store the output file path
-      session_start();
 
       // Loop over each submitted file
       foreach ($_FILES['pdfFile']['tmp_name'] as $i => $tmp_name) {
@@ -117,11 +115,11 @@
         $filename = $outputFile;
       }
 
+      // Start the session so we can store the output file path
+      session_start();
+
       // Store the output file in the session so we can download it later
       $_SESSION['outputFiles'][$name] = $filename;
-
-      echo $name;
-      echo $_SESSION['outputFiles'][$name];
 
       // Redirect to the download page
       header('Location: download.php?filename=' . urlencode($name));
